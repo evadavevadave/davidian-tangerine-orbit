@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026 Davidian. See LICENSE and NOTICE.md. */
 /* Stage 2: the four all-pass stages (IC1b, IC2a, IC2b, IC3a), each with a 2N5952 JFET
  * and 22k across it, plus the 22k from stage 4's output to stage 1's inverting input.
  *

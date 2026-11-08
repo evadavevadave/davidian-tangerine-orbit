@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026 Davidian. See LICENSE and NOTICE.md. */
 /* The audio path in schematic order. */
 #ifndef PHASER_H
 #define PHASER_H

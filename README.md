@@ -2,6 +2,8 @@
 
 A Davidian LV2 circuit model of a classic orange one-knob phaser schematic (four JFET all-pass stages with the 22k feedback resistor). Mono, no latency.
 
+Free software under the GNU GPL, version 3 or later: see [LICENSE](LICENSE), and [NOTICE.md](NOTICE.md) for third-party licences, sources and acknowledgements. **Made with generative AI** (Claude Code): see [AI_USAGE.md](AI_USAGE.md). The build copies all three files into the bundle.
+
 ## Build and test on Windows
 
 ```
@@ -29,7 +31,7 @@ Look for **Davidian Tangerine Orbit** in your host's plugin list. The plugin URI
 
 ![GUI](docs/gui.png)
 
-The bundle includes a native GUI (`tangerine_orbit_ui.dll`) in the same house style as the Dual Opto Phasor, using its `style.h`, `font.h` and `canvas.h` unchanged. The panel is called **Tangerine Orbit**, an original name with none of the original pedal's branding. It has no dependencies: it draws with its own software renderer and puts the result in a Win32 window (`ui:WindowsUI`) or an X11 window (`ui:X11UI` on Linux). macOS has no window layer yet, so CMake leaves the GUI out there.
+The bundle includes a native GUI (`tangerine_orbit_ui.dll`) in the Davidian house style, using the shared `style.h`, `font.h` and `canvas.h` unchanged. The panel is called **Tangerine Orbit**, an original name with none of the original pedal's branding. It has no dependencies: it draws with its own software renderer and puts the result in a Win32 window (`ui:WindowsUI`) or an X11 window (`ui:X11UI` on Linux). macOS has no window layer yet, so CMake leaves the GUI out there.
 
 - Drag a knob up or down to turn it. Hold Shift for fine control. Double-click resets it, and the mouse wheel works too.
 - Click the footswitch to switch the effect on or off. Its red LED shows the state.
@@ -75,7 +77,8 @@ The output is inverted relative to bypass, because the schematic's mixing stage 
 | `src/ports.h` | Port numbers shared by the plugin and the GUI |
 | `src/ui/panel.h` | GUI layout, drawing and mouse handling |
 | `src/ui/ui_lv2.c` | LV2 GUI entry points and the Win32/X11 window layer |
-| `src/ui/style.h`, `font.h`, `canvas.h` | House style, copied unchanged from the Dual Opto Phasor |
+| `src/ui/style.h`, `font.h`, `canvas.h` | Davidian GUI house style, shared unchanged across Davidian plugins |
+| `LICENSE`, `NOTICE.md`, `AI_USAGE.md` | GPL-3.0 text, third-party licences, sources and acknowledgements, AI usage statement |
 | `src/lv2_abi.h` | The LV2 C interface, so no SDK is needed |
 | `bundle/` | LV2 metadata |
 | `test/test_dsp.c` | Compares the circuit code to the schematic's transfer function, and tests the built library |
@@ -98,3 +101,7 @@ These are estimates to tune by ear or against a real pedal:
 - Op amp clipping is applied at the input buffer and at stage 4's output, not inside each all-pass stage. This only matters at very high levels.
 - Op amps are otherwise ideal, so their bandwidth and slew limits aren't modelled.
 - Each channel in a stereo track gets its own copy from the host.
+
+## Licence
+
+Copyright (C) 2026 Davidian. Released under the GNU General Public License, version 3 or (at your option) any later version. Every source file carries an `SPDX-License-Identifier` line. `src/lv2_abi.h` is under the ISC licence, which is GPL-compatible, because it reproduces the LV2 interface declarations. [NOTICE.md](NOTICE.md) lists every licence and source and credits the projects this builds on. [AI_USAGE.md](AI_USAGE.md) says how AI was used.

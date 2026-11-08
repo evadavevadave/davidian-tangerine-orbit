@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026 Davidian. See LICENSE and NOTICE.md. */
 /* Renders the GUI panel to a .bmp without opening a window, on any platform.
  * Usage: ui_render <out.bmp> */
 #define _CRT_SECURE_NO_WARNINGS

@@ -1,4 +1,5 @@
 @echo off
+rem SPDX-License-Identifier: GPL-3.0-or-later
 rem Builds build\tangerine_orbit.lv2 and the test programs using Visual Studio's x64 C compiler.
 rem Test programs go in build-test, so build\ holds only the bundle for the LV2 parser to scan.
 setlocal
@@ -29,6 +30,9 @@ del /q "%BUNDLE%\tangerine_orbit_ui.lib" "%BUNDLE%\tangerine_orbit_ui.exp" 2>nul
 
 copy /y "%ROOT%bundle\*.ttl" "%BUNDLE%\" >nul || (popd & exit /b 1)
 
+rem Licence, notices and the AI usage statement travel with the bundle.
+for %%F in (LICENSE NOTICE.md AI_USAGE.md) do copy /y "%ROOT%%%F" "%BUNDLE%\" >nul || (popd & exit /b 1)
+
 cl /nologo /std:c11 /O2 /fp:precise /MT /W3 "%ROOT%test\test_dsp.c" /Fo"%TESTS%\\" /Fe"%TESTS%\test_dsp.exe" /link /NOLOGO
 if errorlevel 1 (popd & exit /b 1)
 
@@ -43,3 +47,4 @@ if errorlevel 1 (popd & exit /b 1)
 
 popd
 echo Built %BUNDLE%
+echo Davidian Tangerine Orbit is free software under GPL-3.0-or-later. It was made with generative AI ^(Claude Code^); see AI_USAGE.md.

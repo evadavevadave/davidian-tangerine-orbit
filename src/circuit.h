@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026 Davidian. See LICENSE and NOTICE.md. */
 /* Values and helpers shared by every stage. Voltages inside the audio path are
  * relative to VREF, the circuit's signal ground. */
 #ifndef CIRCUIT_H

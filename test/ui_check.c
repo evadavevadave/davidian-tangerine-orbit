@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026 Davidian. See LICENSE and NOTICE.md. */
 /* Loads the built GUI library the way a Windows LV2 host does, embeds it in a window,
  * drives it with mouse messages and checks the values it sends back. Windows only.
  * Usage: ui_check <bundle folder> [screenshot.bmp] */

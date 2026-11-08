@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026 Davidian. See LICENSE and NOTICE.md. */
 /* Checks for the Tangerine Orbit model. Usage: test_dsp <bundle folder>
  * Part 1 drives the circuit code directly and compares it to the schematic's transfer
  * function, worked out by hand below and independent of the solver. Part 2 loads the built

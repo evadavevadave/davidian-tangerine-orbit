@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026 Davidian. See LICENSE and NOTICE.md. */
 /* An original stroke font for panel lettering. Each glyph is a set of strokes on a grid
  * 6 units wide and 12 high (y down). A stroke is a run of two-character points, x then y,
  * each a base-16 digit; strokes are separated by spaces. Drawn with round-ended lines,

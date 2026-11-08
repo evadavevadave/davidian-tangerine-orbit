@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026 Davidian. See LICENSE and NOTICE.md. */
 /* Port indices, shared by the plugin and its GUI. They must match bundle/tangerine_orbit.ttl. */
 #ifndef PORTS_H
 #define PORTS_H

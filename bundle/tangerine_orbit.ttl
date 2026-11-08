@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
 @prefix doap:  <http://usefulinc.com/ns/doap#> .
 @prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
 @prefix pprop: <http://lv2plug.in/ns/ext/port-props#> .
@@ -7,7 +8,8 @@
 <urn:davidian:tangerine-orbit>
 	a lv2:Plugin , lv2:PhaserPlugin ;
 	doap:name "Davidian Tangerine Orbit" ;
-	rdfs:comment "Circuit model of a classic four-stage JFET phaser schematic: four all-pass stages with regeneration, relaxation-oscillator sweep and PNP mixing stage." ;
+	doap:license <https://spdx.org/licenses/GPL-3.0-or-later> ;
+	rdfs:comment "Circuit model of a classic four-stage JFET phaser schematic: four all-pass stages with regeneration, relaxation-oscillator sweep and PNP mixing stage. GPL-3.0-or-later. Made with generative AI (Claude Code); see AI_USAGE.md in the bundle." ;
 	lv2:minorVersion 0 ;
 	lv2:microVersion 0 ;
 	lv2:optionalFeature lv2:hardRTCapable ;

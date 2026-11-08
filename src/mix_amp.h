@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026 Davidian. See LICENSE and NOTICE.md. */
 /* Stage 3: 2N4125 PNP inverting summer. Dry and wet each come in through 150k, 150k runs
  * from collector to base, 56k from collector to ground, and the emitter sits on VREF.
  * Then 0.05 uF and 150k to the output jack. */

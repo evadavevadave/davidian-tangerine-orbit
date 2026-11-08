@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026 Davidian. See LICENSE and NOTICE.md. */
 /* A small anti-aliased software renderer, so the GUI needs no graphics library.
  * Pixels are 0x00RRGGBB, which matches a 32-bit Windows DIB and a 24-bit TrueColor X11
  * visual. Every shape is drawn from its signed distance, which gives clean edges at any size. */

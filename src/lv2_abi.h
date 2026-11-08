@@ -1,3 +1,6 @@
+/* SPDX-License-Identifier: ISC
+ * Interface declarations matching lv2/core/lv2.h, Copyright 2006-2020 Steve Harris and
+ * David Robillard, ISC license (see NOTICE.md). Reproduced so the build needs no LV2 SDK. */
 /* The small, stable part of the LV2 core C ABI this plugin uses.
  * Declared here so the build needs no LV2 SDK. Layout and names match lv2/core/lv2.h. */
 #ifndef LV2_ABI_H

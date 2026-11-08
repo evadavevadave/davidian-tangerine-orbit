@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
 # Builds the bundle on any platform. On Windows, build.bat does the same without CMake.
 cmake_minimum_required(VERSION 3.16)
 project(tangerine_orbit C)
@@ -73,6 +74,12 @@ else()
 endif()
 file(WRITE ${BUNDLE_DIR}/manifest.ttl "${MANIFEST}")
 configure_file(bundle/tangerine_orbit.ttl ${BUNDLE_DIR}/tangerine_orbit.ttl COPYONLY)
+
+# Licence, notices and the AI usage statement travel with the bundle.
+foreach(DOC LICENSE NOTICE.md AI_USAGE.md)
+    configure_file(${DOC} ${BUNDLE_DIR}/${DOC} COPYONLY)
+endforeach()
+message(STATUS "Davidian Tangerine Orbit: GPL-3.0-or-later, made with generative AI (Claude Code); see AI_USAGE.md")
 
 enable_testing()
 add_test(NAME test_dsp COMMAND test_dsp ${BUNDLE_DIR})

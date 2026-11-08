@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026 Davidian. See LICENSE and NOTICE.md. */
 /* Stage 1: 10k and 0.01 uF into IC1a, a unity follower with 470k to VREF. */
 #ifndef INPUT_BUFFER_H
 #define INPUT_BUFFER_H

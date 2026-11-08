@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026 Davidian. See LICENSE and NOTICE.md. */
 /* Stage 4: the sweep. IC3b is a relaxation oscillator: the Speed pot charges the 10 uF
  * capacitor from the op amp output, and 470k/150k from VREF sets the switching thresholds.
  * 0.01 uF and 150k around the inverting input slow each transition slightly. The capacitor

@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026 Davidian. See LICENSE and NOTICE.md. */
 /* LV2 entry points, controls and bypass for the Tangerine Orbit circuit model. */
 #include <stdlib.h>
 

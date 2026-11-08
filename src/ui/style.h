@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026 Davidian. See LICENSE and NOTICE.md. */
 /* House style for all LV2 plugin GUIs: palette and lettering sizes.
  * Copy src/ui/canvas.h, font.h and this file into a new project to get the same look:
  * graphite powder-coat panel, cream stroke lettering, amber accents, red footswitch LEDs.

@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026 Davidian. See LICENSE and NOTICE.md. */
 /* LV2 GUI for the Davidian Tangerine Orbit: the LV2 UI entry points plus a thin window layer
  * for Win32 (ui:WindowsUI) and X11 (ui:X11UI). Everything else is in panel.h, which knows
  * nothing about windows. The UI ABI is declared here so no LV2 SDK is needed. */

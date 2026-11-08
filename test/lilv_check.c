@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026 Davidian. See LICENSE and NOTICE.md. */
 /* Checks the built bundle with the real LV2 parser (lilv) that ships with Ardour 9.
  * Windows only. Uses LV2_PATH, so nothing has to be installed.
  * Usage: lilv_check <folder containing tangerine_orbit.lv2> */

@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026 Davidian. See LICENSE and NOTICE.md. */
 /* The GUI panel: layout, drawing and mouse handling, independent of any windowing system.
  *
  * House style from style.h, font.h and canvas.h. The design is original: it uses its own
