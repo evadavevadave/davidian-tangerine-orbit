@@ -1,0 +1,7 @@
+# Store text with LF line endings; check out with the platform's own.
+* text=auto
+
+# cmd.exe needs Windows line endings in batch files.
+*.bat text eol=crlf
+
+*.png binary

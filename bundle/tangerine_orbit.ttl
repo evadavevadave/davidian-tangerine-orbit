@@ -1,0 +1,86 @@
+@prefix doap:  <http://usefulinc.com/ns/doap#> .
+@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
+@prefix pprop: <http://lv2plug.in/ns/ext/port-props#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix units: <http://lv2plug.in/ns/extensions/units#> .
+
+<urn:davidian:tangerine-orbit>
+	a lv2:Plugin , lv2:PhaserPlugin ;
+	doap:name "Davidian Tangerine Orbit" ;
+	rdfs:comment "Circuit model of a classic four-stage JFET phaser schematic: four all-pass stages with regeneration, relaxation-oscillator sweep and PNP mixing stage." ;
+	lv2:minorVersion 0 ;
+	lv2:microVersion 0 ;
+	lv2:optionalFeature lv2:hardRTCapable ;
+	lv2:port [
+		a lv2:AudioPort , lv2:InputPort ;
+		lv2:index 0 ;
+		lv2:symbol "in" ;
+		lv2:name "In"
+	] , [
+		a lv2:AudioPort , lv2:OutputPort ;
+		lv2:index 1 ;
+		lv2:symbol "out" ;
+		lv2:name "Out"
+	] , [
+		a lv2:ControlPort , lv2:InputPort ;
+		lv2:index 2 ;
+		lv2:symbol "speed" ;
+		lv2:name "Speed" ;
+		lv2:default 0.5 ;
+		lv2:minimum 0.2 ;
+		lv2:maximum 10.0 ;
+		lv2:portProperty pprop:logarithmic ;
+		units:unit units:hz
+	] , [
+		a lv2:ControlPort , lv2:InputPort ;
+		lv2:index 3 ;
+		lv2:symbol "bias" ;
+		lv2:name "Bias Trim" ;
+		lv2:default 0.46 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0
+	] , [
+		a lv2:ControlPort , lv2:InputPort ;
+		lv2:index 4 ;
+		lv2:symbol "volts" ;
+		lv2:name "Volts at 0 dBFS" ;
+		lv2:default 1.0 ;
+		lv2:minimum 0.1 ;
+		lv2:maximum 10.0 ;
+		lv2:portProperty pprop:logarithmic
+	] , [
+		a lv2:ControlPort , lv2:InputPort ;
+		lv2:index 5 ;
+		lv2:symbol "output" ;
+		lv2:name "Output" ;
+		lv2:default -6.0 ;
+		lv2:minimum -24.0 ;
+		lv2:maximum 12.0 ;
+		units:unit units:db
+	] , [
+		a lv2:ControlPort , lv2:InputPort ;
+		lv2:index 6 ;
+		lv2:symbol "enabled" ;
+		lv2:name "Enabled" ;
+		lv2:default 1 ;
+		lv2:minimum 0 ;
+		lv2:maximum 1 ;
+		lv2:designation lv2:enabled ;
+		lv2:portProperty lv2:toggled
+	] , [
+		a lv2:ControlPort , lv2:InputPort ;
+		lv2:index 7 ;
+		lv2:symbol "engage" ;
+		lv2:name "Effect On" ;
+		lv2:default 1 ;
+		lv2:minimum 0 ;
+		lv2:maximum 1 ;
+		lv2:portProperty lv2:toggled
+	] , [
+		a lv2:ControlPort , lv2:OutputPort ;
+		lv2:index 8 ;
+		lv2:symbol "sweep" ;
+		lv2:name "Sweep Position" ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0
+	] .

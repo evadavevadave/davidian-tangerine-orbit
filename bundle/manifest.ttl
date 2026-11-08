@@ -1,0 +1,20 @@
+@prefix lv2:  <http://lv2plug.in/ns/lv2core#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ui:   <http://lv2plug.in/ns/extensions/ui#> .
+
+<urn:davidian:tangerine-orbit>
+	a lv2:Plugin ;
+	lv2:binary <tangerine_orbit.dll> ;
+	rdfs:seeAlso <tangerine_orbit.ttl> .
+
+# UI-BEGIN (CMake removes this block on platforms without a window layer)
+<urn:davidian:tangerine-orbit>
+	ui:ui <urn:davidian:tangerine-orbit#ui> .
+
+<urn:davidian:tangerine-orbit#ui>
+	a ui:WindowsUI ;
+	ui:binary <tangerine_orbit_ui.dll> ;
+	lv2:requiredFeature ui:parent ;
+	lv2:optionalFeature ui:resize , ui:idleInterface ;
+	lv2:extensionData ui:idleInterface .
+# UI-END
