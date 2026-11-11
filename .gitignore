@@ -1,7 +1,7 @@
-# Build outputs: the bundle, test programs and rendered images are all made by build.bat or CMake.
+# Build outputs: the bundles, test programs and rendered images are all made by build.bat
+# or the Makefile.
 /build/
 /build-test/
-/build-cmake/
 
 # Compiler and editor leftovers
 *.obj

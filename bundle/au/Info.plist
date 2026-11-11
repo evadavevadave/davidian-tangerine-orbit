@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleExecutable</key>
+	<string>tangerine_orbit</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.davidian.tangerine-orbit.au</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Tangerine Orbit</string>
+	<key>CFBundlePackageType</key>
+	<string>BNDL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0.0</string>
+	<key>CFBundleVersion</key>
+	<string>1.0.0</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>10.13</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright (C) 2026 Davidian. GPL-3.0-or-later.</string>
+	<key>AudioComponents</key>
+	<array>
+		<dict>
+			<key>name</key>
+			<string>Davidian: Tangerine Orbit</string>
+			<key>description</key>
+			<string>Circuit-modelled four-stage JFET phaser</string>
+			<key>factoryFunction</key>
+			<string>TangerineOrbitAUFactory</string>
+			<key>type</key>
+			<string>aufx</string>
+			<key>subtype</key>
+			<string>Torb</string>
+			<key>manufacturer</key>
+			<string>Dvdn</string>
+			<key>version</key>
+			<integer>65536</integer>
+			<key>sandboxSafe</key>
+			<true/>
+			<key>tags</key>
+			<array>
+				<string>Effects</string>
+				<string>Modulation</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -1,7 +1,9 @@
 # Store text with LF line endings; check out with the platform's own.
 * text=auto
 
-# cmd.exe needs Windows line endings in batch files.
+# cmd.exe needs Windows line endings in batch files; make and the CI need Unix ones.
 *.bat text eol=crlf
+Makefile text eol=lf
+*.yml text eol=lf
 
 *.png binary

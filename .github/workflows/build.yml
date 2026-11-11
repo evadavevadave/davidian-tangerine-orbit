@@ -1,0 +1,169 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) 2026 Davidian
+# Builds and tests the plugin on Windows, macOS and Linux. Pushing a tag such as v1.0.0
+# also publishes a GitHub release with a ready-made zip for each platform.
+name: build
+
+on:
+  push:
+    branches: ['**']
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Version
+        shell: bash
+        run: echo "VERSION=${GITHUB_REF_NAME//\//-}" >> "$GITHUB_ENV"
+      - name: Build and test
+        shell: cmd
+        run: build.bat test
+      - name: Build Steinberg's VST3 validator (MIT, not shipped)
+        shell: bash
+        run: |
+          git clone -q --depth 1 https://github.com/steinbergmedia/vst3sdk.git "$RUNNER_TEMP/vst3sdk"
+          cd "$RUNNER_TEMP/vst3sdk"
+          git submodule update -q --init --depth 1 base pluginterfaces public.sdk cmake
+          cmake -S . -B build -DSMTG_ENABLE_VSTGUI_SUPPORT=OFF -DSMTG_ENABLE_VST3_PLUGIN_EXAMPLES=OFF \
+            -DSMTG_CREATE_PLUGIN_LINK=OFF -DSMTG_RUN_VST_VALIDATOR=OFF > configure.log
+          cmake --build build --target validator --config Release > build.log || { tail -50 build.log; exit 1; }
+      - name: Validate the VST3
+        shell: bash
+        run: |
+          "$RUNNER_TEMP/vst3sdk/build/bin/Release/validator.exe" build/tangerine_orbit.vst3 | tee build-test/validator.txt
+      - name: Package
+        shell: cmd
+        run: build.bat dist
+      - uses: actions/upload-artifact@v5
+        with:
+          name: dist-windows-x64
+          path: build/dist/*.zip
+      - uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: screenshot-windows
+          path: |
+            build-test/ui_window.bmp
+            build-test/vst3_window.bmp
+            build-test/validator.txt
+
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Version
+        run: echo "VERSION=${GITHUB_REF_NAME//\//-}" >> "$GITHUB_ENV"
+      - name: Build (universal arm64 + x86_64)
+        run: make VERSION="$VERSION"
+      - name: Check architectures
+        run: |
+          for f in build/tangerine_orbit.lv2/*.dylib build/tangerine_orbit.component/Contents/MacOS/tangerine_orbit; do
+            lipo -info "$f"
+            lipo "$f" -verify_arch arm64 x86_64
+          done
+      - name: Ad-hoc sign
+        run: |
+          codesign --force --sign - build/tangerine_orbit.lv2/*.dylib
+          codesign --force --sign - build/tangerine_orbit.component
+          plutil -lint build/tangerine_orbit.component/Contents/Info.plist
+      - name: Offline tests
+        run: make test
+      - name: Load test (plugin)
+        run: |
+          cc -O2 -std=c11 test/load_check.c -o build-test/load_check
+          ./build-test/load_check build/tangerine_orbit.lv2 .dylib --no-ui
+      - name: GUI test (Cocoa)
+        run: |
+          clang -O2 -x objective-c -fno-objc-arc test/ui_check_mac.m -framework Cocoa -o build-test/ui_check_mac
+          ./build-test/ui_check_mac build/tangerine_orbit.lv2 build-test/ui_window_macos.png
+      - name: Install the Audio Unit
+        run: |
+          make install
+          killall -9 AudioComponentRegistrar || true
+          auval -a | grep -i dvdn
+      - name: Validate the Audio Unit (auval)
+        run: auval -strict -v aufx Torb Dvdn | tee build-test/auval.txt
+      - name: AU test (audio, state and Cocoa view)
+        run: |
+          clang -O2 -x objective-c -fno-objc-arc test/au_check_mac.m -framework Cocoa -framework AudioToolbox \
+            -framework AudioUnit -framework CoreAudio -o build-test/au_check_mac
+          ./build-test/au_check_mac build-test/au_window_macos.png
+      - name: Package
+        run: make dist VERSION="$VERSION"
+      - uses: actions/upload-artifact@v5
+        with:
+          name: dist-macos-universal
+          path: build/dist/*.zip
+      - uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: screenshot-macos
+          path: |
+            build-test/ui_window_macos.png
+            build-test/au_window_macos.png
+            build-test/auval.txt
+
+  linux:
+    strategy:
+      fail-fast: false
+      matrix:
+        # 22.04 keeps the glibc requirement low (2.35) so the binaries run on older distros.
+        runner: [ubuntu-22.04, ubuntu-22.04-arm]
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Version
+        run: echo "VERSION=${GITHUB_REF_NAME//\//-}" >> "$GITHUB_ENV"
+      - name: Install build and test tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends build-essential libx11-dev xvfb xauth lilv-utils lv2-dev zip
+      - name: Build
+        run: make VERSION="$VERSION"
+      - name: Offline tests
+        run: make test
+      - name: Load test (plugin and X11 GUI on a virtual display)
+        run: |
+          cc -O2 -std=c11 test/load_check.c -o build-test/load_check -ldl -lm
+          xvfb-run -a ./build-test/load_check build/tangerine_orbit.lv2 .so
+      - name: Check the bundle with lilv
+        run: |
+          export LV2_PATH="$PWD/build"
+          lv2info urn:davidian:tangerine-orbit | tee build-test/lv2info.txt
+          grep -q "Effect On" build-test/lv2info.txt
+          grep -q "X11UI" build-test/lv2info.txt
+      - name: Package
+        run: make dist VERSION="$VERSION"
+      - uses: actions/upload-artifact@v5
+        with:
+          name: dist-${{ matrix.runner == 'ubuntu-22.04-arm' && 'linux-arm64' || 'linux-x64' }}
+          path: build/dist/*.zip
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [windows, macos, linux]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v5
+        with:
+          pattern: dist-*
+          path: dist
+          merge-multiple: true
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ls -l dist
+          gh release create "$GITHUB_REF_NAME" dist/*.zip \
+            --title "Davidian Tangerine Orbit $GITHUB_REF_NAME" \
+            --notes-file docs/release-notes.md

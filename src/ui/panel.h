@@ -54,6 +54,12 @@ static const Widget WIDGETS[] = {
 #define KNOB_SPAN (0.75f * CV_PI) /* +/-135 degrees */
 
 typedef void (*PanelWrite)(void* host, int port, float value);
+/* Optional: brackets each user edit (begin = 1, then writes, then begin = 0), so hosts
+ * that record automation see one gesture per drag. */
+typedef void (*PanelGesture)(void* host, int port, int begin);
+/* Optional: called by the window's timer, so a wrapper can feed in live values such as
+ * the sweep lamp when its host has no port events. */
+typedef void (*PanelPoll)(void* host);
 
 typedef struct {
     uint32_t* px; /* what the window shows */
@@ -65,6 +71,8 @@ typedef struct {
     int shown;     /* widget in the display, or -1 */
     int dirty;
     PanelWrite write;
+    PanelGesture gesture; /* may be NULL; set after panel_init */
+    PanelPoll poll;       /* may be NULL; set after panel_init */
     void* host;
 } Panel;
 
@@ -336,10 +344,23 @@ static void set_value(Panel* p, int wi, float v)
     p->shown = wi;
     p->dirty = 1;
     if (p->val[w->port] != v) {
+        /* Outside a drag (clicks, wheel, double-click) each change is its own gesture. */
+        const int lone = p->drag != wi && p->gesture;
         p->val[w->port] = v;
+        if (lone)
+            p->gesture(p->host, w->port, 1);
         if (p->write)
             p->write(p->host, w->port, v);
+        if (lone)
+            p->gesture(p->host, w->port, 0);
     }
+}
+
+static void drag_start(Panel* p, int wi)
+{
+    p->drag = wi;
+    if (p->gesture)
+        p->gesture(p->host, WIDGETS[wi].port, 1);
 }
 
 static int hit(float x, float y)
@@ -369,7 +390,7 @@ static void panel_mouse_down(Panel* p, float x, float y, int dbl)
         set_value(p, i, w->def);
         return;
     }
-    p->drag = i;
+    drag_start(p, i);
     p->drag_y = y;
     p->drag_norm = w_norm(w, p->val[w->port]);
     p->shown = i;
@@ -394,9 +415,20 @@ static void panel_mouse_move(Panel* p, float x, float y, int fine)
 
 static void panel_mouse_up(Panel* p)
 {
-    if (p->drag >= 0)
-        p->dirty = 1;
+    const int d = p->drag;
+    if (d < 0)
+        return;
+    p->dirty = 1;
     p->drag = -1;
+    if (p->gesture)
+        p->gesture(p->host, WIDGETS[d].port, 0);
+}
+
+/* The window's timer calls this before redrawing. */
+static void panel_poll(Panel* p)
+{
+    if (p->poll)
+        p->poll(p->host);
 }
 
 static void panel_wheel(Panel* p, float x, float y, float steps, int fine)

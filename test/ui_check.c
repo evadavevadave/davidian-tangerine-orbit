@@ -11,7 +11,6 @@
 
 #include "../src/lv2_abi.h"
 #include "../src/ports.h"
-#include "../src/ui/panel.h" /* widget positions */
 
 typedef void (*WriteFn)(void*, uint32_t, uint32_t, uint32_t, const void*);
 typedef struct {
@@ -69,6 +68,24 @@ static void drag(HWND w, int x, int y, int dy)
     SendMessageA(w, WM_LBUTTONUP, 0, xy(x, y + dy));
 }
 
+static void dblclick(HWND w, int x, int y)
+{
+    SendMessageA(w, WM_LBUTTONDBLCLK, MK_LBUTTON, xy(x, y));
+    SendMessageA(w, WM_LBUTTONUP, 0, xy(x, y));
+}
+
+static void wheel_up(HWND w, int x, int y)
+{
+    POINT pt;
+    pt.x = x;
+    pt.y = y;
+    ClientToScreen(w, &pt);
+    SendMessageA(w, WM_MOUSEWHEEL, MAKEWPARAM(0, WHEEL_DELTA), MAKELPARAM(pt.x, pt.y));
+}
+
+#define WIDGET_T HWND
+#include "ui_script.h"
+
 static int save_window(HWND w, const char* path)
 {
     RECT r;
@@ -123,10 +140,6 @@ int main(int argc, char** argv)
     RECT rc;
     int i;
     char label[160];
-    const Widget* speed = &WIDGETS[0];
-    const Widget* bias = &WIDGETS[1];
-    const Widget* output = &WIDGETS[3];
-    const Widget* foot = &WIDGETS[4];
 
     if (argc < 2) {
         printf("usage: ui_check <bundle folder> [screenshot.bmp]\n");
@@ -166,49 +179,19 @@ int main(int argc, char** argv)
           d->extension_data("http://lv2plug.in/ns/extensions/ui#idleInterface") != NULL);
 
     /* The host sends every port's value first, including the sweep output. */
-    {
-        static const float vals[PORT_COUNT] = { 0, 0, 0.5f, 0.46f, 1.0f, -6.0f, 1, 1, 0.6f };
-        for (i = PORT_SPEED; i < PORT_COUNT; ++i)
-            d->port_event(ui, (uint32_t)i, sizeof(float), 0, &vals[i]);
-    }
+    for (i = PORT_SPEED; i < PORT_COUNT; ++i)
+        d->port_event(ui, (uint32_t)i, sizeof(float), 0, &UI_DEFAULTS[i]);
     check("port updates from the host write nothing back", writes == 0);
     pump();
 
-    /* 180 px is the knob's full travel, so 36 px down is a fifth of it. */
-    drag(child, (int)bias->x, (int)bias->y, 36);
-    snprintf(label, sizeof label, "dragging Bias down 36 px sends port %d = %.3f", last_port, last_value);
-    check(label, last_port == PORT_BIAS && fabsf(last_value - 0.26f) < 0.01f);
+    ui_script(child);
 
-    drag(child, (int)speed->x, (int)speed->y, -400);
-    snprintf(label, sizeof label, "dragging Speed far up stops at %.3f Hz", last_value);
-    check(label, last_port == PORT_SPEED && last_value == 10.0f);
-
-    SendMessageA(child, WM_LBUTTONDBLCLK, MK_LBUTTON, xy((int)speed->x, (int)speed->y));
-    SendMessageA(child, WM_LBUTTONUP, 0, xy((int)speed->x, (int)speed->y));
-    snprintf(label, sizeof label, "double-click resets Speed to %.2f Hz", last_value);
-    check(label, last_port == PORT_SPEED && fabsf(last_value - 0.5f) < 1e-4f);
-
-    click(child, (int)foot->x, (int)foot->y);
-    check("footswitch turns the effect off", last_port == PORT_ENGAGE && last_value == 0.0f);
-    click(child, (int)foot->x, (int)foot->y);
-    check("footswitch turns it back on", last_port == PORT_ENGAGE && last_value == 1.0f);
-
-    {
-        POINT pt = { (LONG)output->x, (LONG)output->y };
-        ClientToScreen(child, &pt);
-        writes = 0;
-        SendMessageA(child, WM_MOUSEWHEEL, MAKEWPARAM(0, WHEEL_DELTA), MAKELPARAM(pt.x, pt.y));
-        snprintf(label, sizeof label, "mouse wheel on Output sends %.2f dB", last_value);
-        check(label, writes == 1 && last_port == PORT_OUTPUT && fabsf(last_value - (-6.0f + 0.9f)) < 1e-3f);
-    }
     {
         const float lamp = 0.9f;
         writes = 0;
         d->port_event(ui, PORT_SWEEP, sizeof(float), 0, &lamp);
         check("sweep lamp update writes nothing back", writes == 0);
     }
-    click(child, 5, 5);
-    check("clicking empty panel sends nothing new", last_port == PORT_OUTPUT);
 
     pump();
     if (argc > 2) {
